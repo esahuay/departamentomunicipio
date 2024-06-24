@@ -1,0 +1,83 @@
+﻿USE [pais]
+GO
+/****** Object:  Table [dbo].[departamentos]    Script Date: 23/06/2024 16:51:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[departamentos](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](30) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[municipios]    Script Date: 23/06/2024 16:51:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[municipios](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[departamento_id] [int] NOT NULL,
+	[name] [varchar](30) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[pais]    Script Date: 23/06/2024 16:51:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[pais](
+	[Id] [int] NOT NULL,
+	[nombre] [varchar](100) NOT NULL,
+	[IdDepartamento] [int] NOT NULL,
+	[IdMunicipio] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[municipios]  WITH CHECK ADD  CONSTRAINT [municipios_departamento_id_foreign] FOREIGN KEY([departamento_id])
+REFERENCES [dbo].[departamentos] ([id])
+GO
+ALTER TABLE [dbo].[municipios] CHECK CONSTRAINT [municipios_departamento_id_foreign]
+GO
+ALTER TABLE [dbo].[pais]  WITH CHECK ADD  CONSTRAINT [fk_pais_departamento] FOREIGN KEY([IdDepartamento])
+REFERENCES [dbo].[departamentos] ([id])
+GO
+ALTER TABLE [dbo].[pais] CHECK CONSTRAINT [fk_pais_departamento]
+GO
+ALTER TABLE [dbo].[pais]  WITH CHECK ADD  CONSTRAINT [fk_pais_municipio] FOREIGN KEY([IdMunicipio])
+REFERENCES [dbo].[municipios] ([id])
+GO
+ALTER TABLE [dbo].[pais] CHECK CONSTRAINT [fk_pais_municipio]
+GO
+
+
+--Scaffold-DbContext "Server=msi;Database=pais;user id=aplicacion;password=test123;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f
+
+
+
+Script:
+
+$('#IdDepartamento').change(function () { ... }): Detecta el cambio en el select de IdDepartamento.
+$.ajax({ ... }): Realiza una solicitud AJAX para obtener los municipios del departamento seleccionado.
+municipioSelect.empty(): Vacía las opciones existentes en el select de IdMunicipio.
+municipioSelect.append('<option value="">Select Municipio</option>');: Añade una opción predeterminada.
+$.each(data, function (index, municipio) { ... }): Itera sobre los datos devueltos y añade cada municipio como una opción en el select de IdMunicipio.
+Controlador:
+
+getddlMunicipios(int id): Método para obtener los municipios basados en el id del departamento y devolverlos en formato JSON.
+Select(m => new { value = m.IdMunicipio, text = m.Nombre }): Proyecta los datos de municipio en un formato adecuado para las opciones del select.
+Con estos cambios, al seleccionar un departamento, el select de municipios se actualizará dinámicamente con las opciones correspondientes.
+
+
+
